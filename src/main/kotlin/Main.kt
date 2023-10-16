@@ -1,6 +1,5 @@
 //для чтения с файла
 import java.io.File
-import java.io.InputStream
 import java.util.*
 //для вытаскивания из строки выражения
 import java.util.regex.Matcher
@@ -8,9 +7,11 @@ import java.util.regex.Pattern
 
 
 fun main(args: Array<String>) {
+
+    println("\nПривет! Это КрутойВычислитель3000!\n")
     while (true) {
         println(
-            "Привет! Это КрутойВычислитель3000!\nДля выбора пункта меню введите номер пункта и нажмите Enter:\n" +
+            "Для выбора пункта меню введите номер пункта и нажмите Enter:\n" +
                     "1. Вычисления в терминале.\n2. Вычисления в файлах.\n3. Выход."
         )
 
@@ -37,45 +38,10 @@ fun main(args: Array<String>) {
                 )
 
                 val consoleIo = ConsoleIo()
-                var Expression = consoleIo.read()
 
-                while (Expression != "stop") {
+                val Expression = consoleIo.read()
 
-                    val regex = """^\d+\s*[+-/*]\s*\d+${'$'}""".toRegex()
-
-                    if (regex.matches(Expression)) {
-                        var x1 = ExprFromString(Pattern.compile("^\\d+"), Expression).toInt()
-                        var x2 = ExprFromString(Pattern.compile("\\d+$"), Expression).toInt()
-                        var op = ExprFromString(Pattern.compile("[+-/*]"), Expression)
-
-                        var result = 0
-
-                        when (op) {
-                            "+" -> {
-                                result = action(x1, x2, ::sum)
-                            }
-
-                            "-" -> {
-                                result = action(x1, x2, ::subtract)
-                            }
-
-                            "*" -> {
-                                result = action(x1, x2, ::multiply)
-                            }
-
-                            "/" -> {
-                                result = action(x1, x2, ::division)
-                            }
-                        }
-
-                        consoleIo.write(result.bin())
-                    } else {
-                        consoleIo.write("Неверный формат выражения")
-                    }
-
-                    Expression = consoleIo.read()
-                }
-
+                Vitaskivatel(Expression, consoleIo, consoleIo)
             }
 
             2 -> {
@@ -88,49 +54,60 @@ fun main(args: Array<String>) {
                 val inputFile = FileIo("input.txt")
                 val outputFile = FileIo("output.txt")
 
-                var Expression = inputFile.read()
+                val Expression = inputFile.read()
 
-                while (Expression != "stop") {
-
-                    val regex = """^\d+\s*[+-/*]\s*\d+${'$'}""".toRegex()
-
-                    if (regex.matches(Expression)) {
-                        var x1 = ExprFromString(Pattern.compile("^\\d+"), Expression).toInt()
-                        var x2 = ExprFromString(Pattern.compile("\\d+$"), Expression).toInt()
-                        var op = ExprFromString(Pattern.compile("[+-/*]"), Expression)
-
-                        var result = 0
-
-                        when (op) {
-                            "+" -> {
-                                result = action(x1, x2, ::sum)
-                            }
-
-                            "-" -> {
-                                result = action(x1, x2, ::subtract)
-                            }
-
-                            "*" -> {
-                                result = action(x1, x2, ::multiply)
-                            }
-
-                            "/" -> {
-                                result = action(x1, x2, ::division)
-                            }
-                        }
-                        outputFile.write(result.bin())
-                    } else {
-                        outputFile.write("Неверный формат выражения")
-                    }
-
-                    Expression = inputFile.read()
-                }
-
+                Vitaskivatel(Expression, outputFile, inputFile)
             }
 
             3 -> {
                 break
             }
+        }
+    }
+}
+
+private fun Vitaskivatel(Expression: String, outputFile: IO, inputFile: IO) {
+
+    var Expression1 = Expression
+
+    while (Expression1 != "stop") {
+
+        val regex = """^\d+\s*[+-/*]\s*\d+${'$'}""".toRegex()
+
+        if (regex.matches(Expression1)) {
+            val x1 = ExprFromString(Pattern.compile("^\\d+"), Expression1).toInt()
+            val x2 = ExprFromString(Pattern.compile("\\d+$"), Expression1).toInt()
+            val op = ExprFromString(Pattern.compile("[+-/*]"), Expression1)
+            val result = CalculateResult(op, x1, x2)
+            outputFile.write(result.bin())
+        } else {
+            outputFile.write("Неверный формат выражения")
+        }
+
+        Expression1 = inputFile.read()
+    }
+}
+
+private fun CalculateResult(op: String, x1: Int, x2: Int): Int {
+
+    when (op) {
+        "+" -> {
+            return action(x1, x2, ::sum)
+        }
+
+        "-" -> {
+            return action(x1, x2, ::subtract)
+        }
+
+        "*" -> {
+            return action(x1, x2, ::multiply)
+        }
+
+        "/" -> {
+            return action(x1, x2, ::division)
+        }
+        else -> {
+            return 0
         }
     }
 }
@@ -165,7 +142,6 @@ fun multiply(a: Int, b: Int): Int {
 fun division(a: Int, b: Int): Int {
     return a / b
 }
-
 
 interface IO {
     fun read(): String
