@@ -6,23 +6,23 @@ import java.util.regex.Pattern
 
  fun vitaskivatel(anyIO: IO) {
 
-    var Expression = anyIO.read()
+    var expression = anyIO.read()
 
-    while (Expression != "stop") {
+    while (expression != "stop") {
 
         val regex = """^\d+\s*[+-/*]\s*\d+${'$'}""".toRegex()
 
-        if (regex.matches(Expression)) {
-            val x1 = exprFromString(Pattern.compile("^\\d+"), Expression).toInt()
-            val x2 = exprFromString(Pattern.compile("\\d+$"), Expression).toInt()
-            val op = exprFromString(Pattern.compile("[+-/*]"), Expression)
+        if (regex.matches(expression)) {
+            val x1 = exprFromString(Pattern.compile("^\\d+"), expression).toInt()
+            val x2 = exprFromString(Pattern.compile("\\d+$"), expression).toInt()
+            val op = exprFromString(Pattern.compile("[+-/*]"), expression)
             val result = calculateResult(op, x1, x2)
             anyIO.write(result.bin())
         } else {
             anyIO.write("Неверный формат выражения")
         }
 
-        Expression = anyIO.read()
+        expression = anyIO.read()
     }
 }
 
