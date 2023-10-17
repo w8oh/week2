@@ -25,7 +25,7 @@ fun main(args: Array<String>) {
             println("Введено некорректное число")
         }
 
-        when (workType) {
+        val  io = when (workType) {
             1 -> {
                 println(
                     "Вы выбрали работу с консолью.\n" +
@@ -33,9 +33,7 @@ fun main(args: Array<String>) {
                             "По завершению работы введите stop с новой строки и нажмите Enter :)"
                 )
 
-                val consoleIo = ConsoleIo()
-
-                vitaskivatel(consoleIo)
+                ConsoleIo()
             }
 
             2 -> {
@@ -45,15 +43,14 @@ fun main(args: Array<String>) {
                             "По завершению ввода введите stop с новой строки. Результат будет в файле output.txt."
                 )
 
-                val fileIo = FileIo("input.txt", "output.txt")
-
-                vitaskivatel(fileIo)
+                FileIo("input.txt", "output.txt")
             }
 
-            3 -> {
+            else -> {
                 break
             }
         }
+        vitaskivatel(io)
     }
 }
 
